@@ -1,0 +1,67 @@
+cmake_minimum_required(VERSION 3.10)
+project(SJTU-Bookstore)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -fsanitize=address")
+endif()
+
+# 查找所有头文件（用于IDE支持和文件组织）
+file(GLOB_RECURSE HEADER_FILES "include/*.hpp" "include/*.ipp")
+source_group("Header Files" FILES ${HEADER_FILES})
+
+# 查找库的源文件 - 现在只有非模板的实现文件
+# 假设您可能有其他非模板的源文件在src/lib目录下
+file(GLOB_RECURSE LIB_SOURCES 
+    "src/lib/*.cpp"
+    "src/lib/*.c"
+)
+
+# 如果有任何源文件，创建库
+if(LIB_SOURCES)
+    add_library(bookstore_lib STATIC ${LIB_SOURCES})
+    target_include_directories(bookstore_lib PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+    )
+    target_compile_options(bookstore_lib PRIVATE -Wall -Wextra)
+endif()
+
+# 查找应用程序源文件
+file(GLOB APP_SOURCES "src/app/*.cpp")
+
+# 为每个应用程序源文件创建可执行文件
+foreach(app_source ${APP_SOURCES})
+    get_filename_component(app_name ${app_source} NAME_WE)
+
+    add_executable(${app_name} ${app_source})
+
+    # 如果存在库，链接它
+    if(TARGET bookstore_lib)
+        target_link_libraries(${app_name} bookstore_lib)
+    endif()
+
+    # 包含头文件目录
+    target_include_directories(${app_name} PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+    )
+
+    # 添加编译选项
+    target_compile_options(${app_name} PRIVATE -Wall -Wextra -DDEBUG)
+
+    message(STATUS "Added executable: ${app_name}")
+endforeach()
+
+# 如果没有库但有应用，确保包含目录被设置
+if(NOT TARGET bookstore_lib AND APP_SOURCES)
+    # 可以在全局设置包含目录
+    include_directories(${CMAKE_SOURCE_DIR}/include)
+endif()
