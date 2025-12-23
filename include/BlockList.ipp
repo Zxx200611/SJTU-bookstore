@@ -64,7 +64,7 @@ BlockList<T,Compare>::~BlockList() noexcept
     fo.write(0,&node_head_pos);
 }
 template<typename T,typename Compare>
-std::pair<int,int> BlockList<T,Compare>::lowerBound(const T &t) noexcept
+std::pair<int,int> BlockList<T,Compare>::lowerBound(const T &t) const noexcept
 {
 // #ifdef DEBUG
 //     std::cout<<"LowerBounding "<<t.idx<<" "<<t.val<<std::endl;
@@ -196,7 +196,7 @@ bool BlockList<T,Compare>::remove(const T &t) noexcept
     return 1;
 }
 template<typename T,typename Compare>
-std::vector<T> BlockList<T,Compare>::find(const T &l,const T&r) noexcept
+std::vector<T> BlockList<T,Compare>::find(const T &l,const T&r) const noexcept
 {
 #ifdef DEBUG
     std::cout<<"Finding "<<l.idx<<std::endl;

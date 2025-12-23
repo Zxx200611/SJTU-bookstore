@@ -40,7 +40,7 @@ private:
     FileOperator fo;
     Compare comp;
 
-    inline std::pair<int,int> lowerBound(const T &t) noexcept;
+    inline std::pair<int,int> lowerBound(const T &t) const noexcept;
 
     inline bool trySplit(Block<T> &b) noexcept;
     inline bool tryMerge(Block<T> &b) noexcept;      //merge this and next
@@ -51,7 +51,7 @@ public:
 
     inline void insert(const T &t) noexcept;
     inline bool remove(const T &t) noexcept;
-    inline std::vector<T> find(const T &l,const T&r) noexcept; // find [l,r)
+    inline std::vector<T> find(const T &l,const T&r) const noexcept; // find [l,r)
 
 #ifdef DEBUG
     inline void print() noexcept;
