@@ -1,12 +1,14 @@
+#include<FileOperator.hpp>
+
 FileOperator::FileOperator(const std::string &file_name)noexcept:file_name(file_name)
 {
     file.close();
     file.open(file_name,std::ios::in|std::ios::out|std::ios::binary);
     if(!file)
     {
-#ifdef DEBUG
-        std::cout<<"makefile "<<file_name<<std::endl;
-#endif
+// #ifdef DEBUG
+//         std::cout<<"makefile "<<file_name<<std::endl;
+// #endif
         file.open(file_name,std::ios::out|std::ios::binary);
         file.close();
         file.open(file_name,std::ios::in|std::ios::out|std::ios::binary);

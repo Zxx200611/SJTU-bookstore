@@ -1,3 +1,5 @@
+#include<Book.hpp>
+
 // Book part ***********************************************************************
 
 Book::Book(const std::string &_ISBN,const std::string &_name,const std::string &_auth,const std::string &_key,int _cnt,int _cost,int _tot_cost) noexcept
@@ -46,44 +48,44 @@ BookOperator::BookOperator() noexcept:
     books("books.dat"),name_to_ISBN("name_to_ISBN.dat"),
     auth_to_ISBN("auth_to_ISBN.dat"),key_to_ISBN("key_to_ISBN.dat")
 {}
-std::pair<bool,Book> BookOperator::findBookByISBN(const std::string &ISBN) const noexcept
+std::pair<bool,Book> BookOperator::findBookByISBN(const std::string &ISBN) noexcept
 {
     const std::vector<Book> &tmp=books.find
     (
-        Book(ISBN," "," "," ",-1,-1,-1),
+        Book(ISBN,"" ,"" ,"" ,-1,-1,-1),
         Book(ISBN,"~","~","~",-1,-1,-1)
     );
     assert(tmp.size()<=1);
     if(tmp.size()==0) return std::make_pair(0,Book("~","~","~","~",-1,-1,-1));
     return std::make_pair(1,tmp.front());
 }
-std::vector<std::string> BookOperator::getISBNByName(const std::string &name) const noexcept
+std::vector<std::string> BookOperator::getISBNByName(const std::string &name) noexcept
 {
     const std::vector<StringAndISBN> &tmp=name_to_ISBN.find
     (
-        StringAndISBN(name," "),
+        StringAndISBN(name,"" ),
         StringAndISBN(name,"~")
     );
     std::vector<std::string> tmp2(0);
     for(const StringAndISBN &e:tmp) tmp2.emplace_back(e.ISBN);
     return tmp2;
 }
-std::vector<std::string> BookOperator::getISBNByAuthor(const std::string &auth) const noexcept
+std::vector<std::string> BookOperator::getISBNByAuthor(const std::string &auth) noexcept
 {
     const std::vector<StringAndISBN> &tmp=name_to_ISBN.find
     (
-        StringAndISBN(auth," "),
+        StringAndISBN(auth,"" ),
         StringAndISBN(auth,"~")
     );
     std::vector<std::string> tmp2(0);
     for(const StringAndISBN &e:tmp) tmp2.emplace_back(e.ISBN);
     return tmp2;
 }
-std::vector<std::string> BookOperator::getISBNByKey(const std::string &key) const noexcept
+std::vector<std::string> BookOperator::getISBNByKey(const std::string &key) noexcept
 {
     const std::vector<StringAndISBN> &tmp=name_to_ISBN.find
     (
-        StringAndISBN(key," "),
+        StringAndISBN(key,"" ),
         StringAndISBN(key,"~")
     );
     std::vector<std::string> tmp2(0);
@@ -99,7 +101,7 @@ bool BookOperator::insertBook(const std::string &_ISBN,const std::string &_name,
     books.insert(Book(_ISBN,_name,_auth,_key,cnt,cost,tot_cost));
     name_to_ISBN.insert(StringAndISBN(_name,_ISBN));
     auth_to_ISBN.insert(StringAndISBN(_auth,_ISBN));
-    key_to_ISBN .insert(StringAndISBN(_key ,_ISBN));
+    key_to_ISBN .insert(StringAndISBN(_key ,_ISBN));        // here is a bug:key has many
     return 1;
 }
 bool BookOperator::removeBook(const std::string &ISBN) noexcept

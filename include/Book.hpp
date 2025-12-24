@@ -17,6 +17,7 @@ public:
 
     static const int memory_size=(ISBN_SIZE+1+BOOKNAME_SIZE+1+AUTHOR_SIZE+1+KEY_SIZE+1)+sizeof(int)+2*sizeof(double);
 
+    inline Book()=default;
     inline Book(const std::string &_ISBN,const std::string &_name,const std::string &_auth,
                 const std::string &_key,int cnt,int cost,int tot_cost) noexcept;
 
@@ -35,6 +36,7 @@ public:
 
     static const int memory_size=BOOKNAME_SIZE+1+ISBN_SIZE+1;
 
+    inline StringAndISBN()=default;
     inline StringAndISBN(const std::string &_index,const std::string &ISBN) noexcept;
     
     class CompareByIndex
@@ -51,10 +53,10 @@ private:
 
 public:
     inline BookOperator() noexcept;
-    inline std::pair<bool,Book> findBookByISBN(const std::string &ISBN) const noexcept;
-    inline std::vector<std::string> getISBNByName(const std::string &name) const noexcept;
-    inline std::vector<std::string> getISBNByAuthor(const std::string &auth) const noexcept;
-    inline std::vector<std::string> getISBNByKey(const std::string &key) const noexcept;
+    inline std::pair<bool,Book> findBookByISBN(const std::string &ISBN) noexcept;
+    inline std::vector<std::string> getISBNByName(const std::string &name) noexcept;
+    inline std::vector<std::string> getISBNByAuthor(const std::string &auth) noexcept;
+    inline std::vector<std::string> getISBNByKey(const std::string &key) noexcept;
 
     inline bool insertBook(const std::string &_ISBN,const std::string &_name,const std::string &_auth,
                            const std::string &_key,int cnt,int cost,int tot_cost) noexcept;

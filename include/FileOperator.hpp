@@ -1,11 +1,14 @@
 #pragma once
 
+
 #ifdef DEBUG
     #include<iostream>
 #endif
 
 #include<fstream>
 #include<string>
+
+#pragma pack(1)
 
 class FileOperator
 {
