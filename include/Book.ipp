@@ -22,8 +22,8 @@ bool Book::CompareByISBN::operator () (const Book &a,const Book &b) const noexce
     if(tmpKey !=0) return tmpKey <0;
     
     if(a.cnt!=b.cnt) return a.cnt<b.cnt;
-    if(a.cost!=b.cost) return a.cost<b.cost;
-    if(a.tot_cost!=b.tot_cost) return a.tot_cost<b.tot_cost;
+    if(Utils::comp(a.cost,b.cost)!=0) return Utils::comp(a.cost,b.cost)<0;    // here is a bug: should use eps
+    return Utils::comp(a.tot_cost,b.tot_cost)<0;
 }
 
 // *********************************************************************************
@@ -101,7 +101,10 @@ bool BookOperator::insertBook(const std::string &_ISBN,const std::string &_name,
     books.insert(Book(_ISBN,_name,_auth,_key,cnt,cost,tot_cost));
     name_to_ISBN.insert(StringAndISBN(_name,_ISBN));
     auth_to_ISBN.insert(StringAndISBN(_auth,_ISBN));
-    key_to_ISBN .insert(StringAndISBN(_key ,_ISBN));        // here is a bug:key has many
+
+    const std::vector<std::string> &tmp=Utils::splitStringByVert(_key);
+    for(const std::string &e:tmp) key_to_ISBN.insert(StringAndISBN(e,_ISBN));
+
     return 1;
 }
 bool BookOperator::removeBook(const std::string &ISBN) noexcept
@@ -112,7 +115,10 @@ bool BookOperator::removeBook(const std::string &ISBN) noexcept
     books.remove(u);
     name_to_ISBN.remove(StringAndISBN(u.name,ISBN));
     auth_to_ISBN.remove(StringAndISBN(u.auth,ISBN));
-    key_to_ISBN .remove(StringAndISBN(u.key ,ISBN));
+
+    const std::vector<std::string> &tmp=Utils::splitStringByVert(u.key);
+    for(const std::string &e:tmp) key_to_ISBN.insert(StringAndISBN(e,ISBN));
+
     return 1;
 }
 bool BookOperator::updateBookData(const std::string &ISBN,const std::string &new_ISBN,const std::string &name,
@@ -125,13 +131,13 @@ bool BookOperator::updateBookData(const std::string &ISBN,const std::string &new
     insertBook(new_ISBN,name,auth,key,u.cnt,cost,u.tot_cost);
     return 1;
 }
-bool BookOperator::updateBookQuantity(const std::string &ISBN,int delta,int delta_cost) noexcept
+bool BookOperator::updateBookQuantity(const std::string &ISBN,int delta,int delta_tot_cost) noexcept
 {
     auto [flg,u]=findBookByISBN(ISBN);
     if(flg==0) return 0;
 
     removeBook(ISBN);
-    insertBook(u.ISBN,u.name,u.auth,u.key,u.cnt+delta,u.cost,u.tot_cost+delta_cost);
+    insertBook(u.ISBN,u.name,u.auth,u.key,u.cnt+delta,u.cost,u.tot_cost+delta_tot_cost);
     return 1;
 }
 

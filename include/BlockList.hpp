@@ -24,6 +24,7 @@ public:
     inline int prev() noexcept;
     inline int next() noexcept;
     inline int pos() noexcept;
+    inline int size() noexcept;
     inline T maxElement() noexcept;
 };
 
@@ -69,6 +70,7 @@ public:
     inline void insert(const T &t) noexcept;
     inline bool remove(const T &t) noexcept;
     inline std::vector<T> find(const T &l,const T&r) noexcept; // find [l,r)
+    inline int size() noexcept;
 
 #ifdef DEBUG
     inline void print() noexcept;

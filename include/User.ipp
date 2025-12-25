@@ -16,6 +16,9 @@ bool User::CompareByUID::operator () (const User &a,const User &b) const noexcep
     if(tmpUID!=0) return tmpUID<0;
     int tmpPasswd=strcmp(a.passwd,b.passwd);
     if(tmpPasswd!=0) return tmpPasswd<0;
+    int tmpName=strcmp(a.name,b.name);
+    if(tmpName!=0) return tmpName<0;
+    return a.per<b.per;
 }
 // *********************************************************************************
 
@@ -49,10 +52,10 @@ bool UserOperator::removeUser(const std::string &_uid) noexcept
     users.remove(u);
     return 1;
 }
-bool UserOperator::changePassword(const std::string &_uid,const std::string &_passwd,const std::string &new_passwd) noexcept
+bool UserOperator::changePassword(const std::string &_uid,const std::string &_passwd,const std::string &new_passwd,int backdoor) noexcept
 {
     auto [b,u]=findUserByUID(_uid);
-    if(b==0||strcmp(_passwd.c_str(),u.passwd)!=0) return 0;
+    if(b==0||(backdoor==0&&strcmp(_passwd.c_str(),u.passwd))!=0) return 0;
     users.remove(u);
     users.insert(User(u.uid,_passwd,u.name,u.per));
     return 1;

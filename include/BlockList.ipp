@@ -19,6 +19,7 @@ SemiBlock<T>::SemiBlock(int _this_pos,FileOperator &fo) noexcept
 template<typename T> inline int SemiBlock<T>::prev() noexcept {return prev_pos;}
 template<typename T> inline int SemiBlock<T>::next() noexcept {return next_pos;}
 template<typename T> inline int SemiBlock<T>::pos() noexcept {return this_pos;}
+template<typename T> inline int SemiBlock<T>::size() noexcept {return siz;}
 template<typename T> inline T SemiBlock<T>::maxElement() noexcept {return max_e;}
 
 template<typename T>
@@ -251,6 +252,15 @@ std::vector<T> BlockList<T,Compare>::find(const T &l,const T&r) noexcept
         u.copyInsert(0,rv_pos,res);
     }
     return res;
+}
+
+template<typename T,typename Compare>
+int BlockList<T,Compare>::size() noexcept
+{
+    int sum=0;
+    SemiBlock<T> u(node_head_pos);
+    while(u.pos()!=-1) sum+=u.size(),u=SemiBlock(u.next());
+    return sum;
 }
 
 #ifdef DEBUG

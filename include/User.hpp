@@ -35,7 +35,7 @@ public:
 
     inline bool insertUser(const std::string &_uid,const std::string &_passwd,const std::string &_name,int _per) noexcept;
     inline bool removeUser(const std::string &_uid) noexcept;
-    inline bool changePassword(const std::string &_uid,const std::string &_passwd,const std::string &new_passwd) noexcept;
+    inline bool changePassword(const std::string &_uid,const std::string &_passwd,const std::string &new_passwd,int backdoor=0) noexcept;
 };
 
 #include"User.ipp"

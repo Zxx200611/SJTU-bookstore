@@ -1,6 +1,7 @@
 #pragma once
 
 #include<BlockList.hpp>
+#include<Utilities.hpp>
 #include<cstring>
 
 const int ISBN_SIZE=20;
@@ -65,7 +66,7 @@ public:
 
     inline bool updateBookData(const std::string &ISBN,const std::string &new_ISBN,const std::string &name,
                                const std::string &auth,const std::string &key,int cost) noexcept;
-    inline bool updateBookQuantity(const std::string &ISBN,int delta,int delta_cost) noexcept;
+    inline bool updateBookQuantity(const std::string &ISBN,int delta,int delta_tot_cost) noexcept;
 };
 
 #include"Book.ipp"
