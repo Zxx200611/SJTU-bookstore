@@ -68,4 +68,4 @@ public:
     inline void reportAllOperationLog() noexcept;
 };
 
-#include"Log.ipp"
+#include<Log.ipp>

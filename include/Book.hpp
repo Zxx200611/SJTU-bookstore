@@ -70,4 +70,4 @@ public:
     inline bool updateBookQuantity(const std::string &ISBN,int delta,double delta_tot_cost) noexcept;
 };
 
-#include"Book.ipp"
+#include<Book.ipp>
