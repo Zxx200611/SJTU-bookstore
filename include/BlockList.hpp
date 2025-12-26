@@ -72,9 +72,7 @@ public:
     inline std::vector<T> find(const T &l,const T&r) noexcept; // find [l,r)
     inline int size() noexcept;
 
-#ifdef DEBUG
-    inline void print() noexcept;
-#endif
+    inline void debug_print() noexcept;
 };
 
 #include"Blocklist.ipp"

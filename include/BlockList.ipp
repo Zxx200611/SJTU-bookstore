@@ -258,14 +258,13 @@ template<typename T,typename Compare>
 int BlockList<T,Compare>::size() noexcept
 {
     int sum=0;
-    SemiBlock<T> u(node_head_pos);
-    while(u.pos()!=-1) sum+=u.size(),u=SemiBlock(u.next());
+    SemiBlock<T> u(node_head_pos,fo);
+    while(u.pos()!=-1) sum+=u.size(),u=SemiBlock<T>(u.next(),fo);
     return sum;
 }
 
-#ifdef DEBUG
 template<typename T,typename Compare>
-void BlockList<T,Compare>::print() noexcept
+void BlockList<T,Compare>::debug_print() noexcept
 {
     std::cout<<"head : "<<node_head_pos<<std::endl;
     for(Block<T> u(node_head_pos,fo);u.pos()!=-1;u=Block<T>(u.next(),fo))
@@ -273,11 +272,10 @@ void BlockList<T,Compare>::print() noexcept
         std::cout<<"Block #"<<u.pos()<<" : { ";
         for(int v_pos=0;v_pos<u.size();v_pos++)
         {
-            std::cout<<"( "<<u.at(v_pos).index<<" , "<<u.at(v_pos).value<<" ) ";
+            std::cout<<"( "<<u.at(v_pos).index<<" , "<<u.at(v_pos).ISBN<<" ) ";
         }
         std::cout<<"}"<<std::endl;
     }
 }
-#endif
 
 // *********************************************************************************

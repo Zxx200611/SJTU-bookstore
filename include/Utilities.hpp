@@ -1,3 +1,5 @@
+#pragma once
+
 #include<string>
 #include<vector>
 
@@ -15,8 +17,9 @@ inline std::vector<std::string> splitStringByVert(const std::string &s)
     for(int i=0;i<s.size();i++)
     {
         if(s[i]!='|') tmp+=s[i];
-        else res.push_back(tmp);
+        else if(tmp.size()!=0) res.push_back(tmp),tmp="";
     }
+    if(tmp!="") res.push_back(tmp);
 
     return res;
 }
@@ -30,8 +33,9 @@ inline std::vector<std::string> splitStringBySpace(const std::string &s)
     for(int i=0;i<s.size();i++)
     {
         if(s[i]!=' ') tmp+=s[i];
-        else res.push_back(tmp);
+        else if(tmp.size()!=0) res.push_back(tmp),tmp="";
     }
+    if(tmp!="") res.push_back(tmp);
 
     return res;
 }

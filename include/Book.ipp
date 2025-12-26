@@ -2,7 +2,7 @@
 
 // Book part ***********************************************************************
 
-Book::Book(const std::string &_ISBN,const std::string &_name,const std::string &_auth,const std::string &_key,int _cnt,int _cost,int _tot_cost) noexcept
+Book::Book(const std::string &_ISBN,const std::string &_name,const std::string &_auth,const std::string &_key,int _cnt,double _cost,double _tot_cost) noexcept
 {
     assert(_ISBN.size()<=ISBN_SIZE    ),memcpy(ISBN,_ISBN.c_str(),strlen(_ISBN.c_str())+1);
     assert(_name.size()<=BOOKNAME_SIZE),memcpy(name,_name.c_str(),strlen(_name.c_str())+1);
@@ -53,10 +53,10 @@ std::pair<bool,Book> BookOperator::findBookByISBN(const std::string &ISBN) noexc
     const std::vector<Book> &tmp=books.find
     (
         Book(ISBN,"" ,"" ,"" ,-1,-1,-1),
-        Book(ISBN,"~","~","~",-1,-1,-1)
+        Book(ISBN,"~~~~~~~~~~","~~~~~~~~~~","~~~~~~~~~~",-1,-1,-1)
     );
     assert(tmp.size()<=1);
-    if(tmp.size()==0) return std::make_pair(0,Book("~","~","~","~",-1,-1,-1));
+    if(tmp.size()==0) return std::make_pair(0,Book("~~~~~~~~~~","~~~~~~~~~~","~~~~~~~~~~","~~~~~~~~~~",-1,-1,-1));
     return std::make_pair(1,tmp.front());
 }
 std::vector<std::string> BookOperator::getISBNByName(const std::string &name) noexcept
@@ -64,7 +64,7 @@ std::vector<std::string> BookOperator::getISBNByName(const std::string &name) no
     const std::vector<StringAndISBN> &tmp=name_to_ISBN.find
     (
         StringAndISBN(name,"" ),
-        StringAndISBN(name,"~")
+        StringAndISBN(name,"~~~~~~~~~~")
     );
     std::vector<std::string> tmp2(0);
     for(const StringAndISBN &e:tmp) tmp2.emplace_back(e.ISBN);
@@ -72,28 +72,38 @@ std::vector<std::string> BookOperator::getISBNByName(const std::string &name) no
 }
 std::vector<std::string> BookOperator::getISBNByAuthor(const std::string &auth) noexcept
 {
-    const std::vector<StringAndISBN> &tmp=name_to_ISBN.find
+    // std::cerr<<"getting isbn by author = "<<auth<<std::endl;
+    const std::vector<StringAndISBN> &tmp=auth_to_ISBN.find
     (
         StringAndISBN(auth,"" ),
-        StringAndISBN(auth,"~")
+        StringAndISBN(auth,"~~~~~~~~~~")
     );
     std::vector<std::string> tmp2(0);
     for(const StringAndISBN &e:tmp) tmp2.emplace_back(e.ISBN);
+    // std::cerr<<"get "<<tmp2.size()<<std::endl;
     return tmp2;
 }
 std::vector<std::string> BookOperator::getISBNByKey(const std::string &key) noexcept
 {
-    const std::vector<StringAndISBN> &tmp=name_to_ISBN.find
+    const std::vector<StringAndISBN> &tmp=key_to_ISBN.find
     (
         StringAndISBN(key,"" ),
-        StringAndISBN(key,"~")
+        StringAndISBN(key,"~~~~~~~~~~")
     );
     std::vector<std::string> tmp2(0);
     for(const StringAndISBN &e:tmp) tmp2.emplace_back(e.ISBN);
     return tmp2;
 }
+std::vector<Book> BookOperator::allBooks() noexcept
+{
+    return books.find
+    (
+        Book("" ,"" ,"" ,"" ,-1,-1,-1),
+        Book("~~~~~~~~~~","~~~~~~~~~~","~~~~~~~~~~","~~~~~~~~~~",-1,-1,-1)
+    );
+}
 bool BookOperator::insertBook(const std::string &_ISBN,const std::string &_name,const std::string &_auth,
-                              const std::string &_key,int cnt,int cost,int tot_cost) noexcept
+                              const std::string &_key,int cnt,double cost,double tot_cost) noexcept
 {
     auto [flg,u]=findBookByISBN(_ISBN);
     if(flg==1) return 0;
@@ -101,8 +111,14 @@ bool BookOperator::insertBook(const std::string &_ISBN,const std::string &_name,
     books.insert(Book(_ISBN,_name,_auth,_key,cnt,cost,tot_cost));
     name_to_ISBN.insert(StringAndISBN(_name,_ISBN));
     auth_to_ISBN.insert(StringAndISBN(_auth,_ISBN));
+    // std::cerr<<"insert a book auth "<<_auth<<std::endl;
+    // auth_to_ISBN.debug_print();
 
-    const std::vector<std::string> &tmp=Utils::splitStringByVert(_key);
+    std::vector<std::string> tmp=Utils::splitStringByVert(_key);
+    int pre_tmp_size=tmp.size();
+    sort(tmp.begin(),tmp.end());
+    tmp.erase(unique(tmp.begin(),tmp.end()),tmp.end());
+    if(pre_tmp_size!=tmp.size()) return 0;
     for(const std::string &e:tmp) key_to_ISBN.insert(StringAndISBN(e,_ISBN));
 
     return 1;
@@ -115,29 +131,31 @@ bool BookOperator::removeBook(const std::string &ISBN) noexcept
     books.remove(u);
     name_to_ISBN.remove(StringAndISBN(u.name,ISBN));
     auth_to_ISBN.remove(StringAndISBN(u.auth,ISBN));
+    // std::cerr<<"remove a book auth "<<u.auth<<std::endl;
+    // auth_to_ISBN.debug_print();
 
     const std::vector<std::string> &tmp=Utils::splitStringByVert(u.key);
-    for(const std::string &e:tmp) key_to_ISBN.insert(StringAndISBN(e,ISBN));
+    for(const std::string &e:tmp) key_to_ISBN.remove(StringAndISBN(e,ISBN));
 
     return 1;
 }
 bool BookOperator::updateBookData(const std::string &ISBN,const std::string &new_ISBN,const std::string &name,
-                                  const std::string &auth,const std::string &key,int cost) noexcept
+                                  const std::string &auth,const std::string &key,double cost) noexcept
 {
     auto [flg,u]=findBookByISBN(ISBN);
     if(flg==0) return 0;
 
-    removeBook(ISBN);
-    insertBook(new_ISBN,name,auth,key,u.cnt,cost,u.tot_cost);
+    if(!removeBook(ISBN)) return 0;
+    if(!insertBook(new_ISBN,name,auth,key,u.cnt,cost,u.tot_cost)) return 0;
     return 1;
 }
-bool BookOperator::updateBookQuantity(const std::string &ISBN,int delta,int delta_tot_cost) noexcept
+bool BookOperator::updateBookQuantity(const std::string &ISBN,int delta,double delta_tot_cost) noexcept
 {
     auto [flg,u]=findBookByISBN(ISBN);
     if(flg==0) return 0;
 
-    removeBook(ISBN);
-    insertBook(u.ISBN,u.name,u.auth,u.key,u.cnt+delta,u.cost,u.tot_cost+delta_tot_cost);
+    if(!removeBook(ISBN)) return 0;
+    if(!insertBook(u.ISBN,u.name,u.auth,u.key,u.cnt+delta,u.cost,u.tot_cost+delta_tot_cost)) return 0;
     return 1;
 }
 

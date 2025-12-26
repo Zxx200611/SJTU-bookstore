@@ -32,10 +32,10 @@ std::pair<bool,User> UserOperator::findUserByUID(const std::string &uid) noexcep
     const std::vector<User> &tmp=users.find
     (
         User(uid,"" ,"" ,0),
-        User(uid,"~","~",8)
+        User(uid,"~~~~~~~~~~","~~~~~~~~~~",8)
     );
 
-    if(tmp.size()!=1) return std::make_pair(0,User("~","~","~",0));
+    if(tmp.size()!=1) return std::make_pair(0,User("~~~~~~~~~~","~~~~~~~~~~","~~~~~~~~~~",0));
     return std::make_pair(1,tmp.front());
 }
 
@@ -57,7 +57,7 @@ bool UserOperator::changePassword(const std::string &_uid,const std::string &_pa
     auto [b,u]=findUserByUID(_uid);
     if(b==0||(backdoor==0&&strcmp(_passwd.c_str(),u.passwd))!=0) return 0;
     users.remove(u);
-    users.insert(User(u.uid,_passwd,u.name,u.per));
+    users.insert(User(u.uid,new_passwd,u.name,u.per));
     return 1;
 }
 

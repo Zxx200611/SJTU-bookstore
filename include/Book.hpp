@@ -20,7 +20,7 @@ public:
 
     inline Book()=default;
     inline Book(const std::string &_ISBN,const std::string &_name,const std::string &_auth,
-                const std::string &_key,int cnt,int cost,int tot_cost) noexcept;
+                const std::string &_key,int cnt,double cost,double tot_cost) noexcept;
 
     class CompareByISBN
     {
@@ -58,15 +58,16 @@ public:
     inline std::vector<std::string> getISBNByName(const std::string &name) noexcept;
     inline std::vector<std::string> getISBNByAuthor(const std::string &auth) noexcept;
     inline std::vector<std::string> getISBNByKey(const std::string &key) noexcept;
+    inline std::vector<Book> allBooks() noexcept;
 
     inline bool insertBook(const std::string &_ISBN,const std::string &_name,const std::string &_auth,
-                           const std::string &_key,int cnt,int cost,int tot_cost) noexcept;
+                           const std::string &_key,int cnt,double cost,double tot_cost) noexcept;
     inline bool removeBook(const std::string &ISBN) noexcept;
 
 
     inline bool updateBookData(const std::string &ISBN,const std::string &new_ISBN,const std::string &name,
-                               const std::string &auth,const std::string &key,int cost) noexcept;
-    inline bool updateBookQuantity(const std::string &ISBN,int delta,int delta_tot_cost) noexcept;
+                               const std::string &auth,const std::string &key,double cost) noexcept;
+    inline bool updateBookQuantity(const std::string &ISBN,int delta,double delta_tot_cost) noexcept;
 };
 
 #include"Book.ipp"

@@ -25,10 +25,9 @@ void FinanceLogOperator::printLastKFinanceLog(int k) noexcept
         FinanceLog(now_time-k+1,-1,-1),
         FinanceLog(now_time+1,-1,-1)
     );
-    for(const FinanceLog &e:tmp)
-    {
-        std::cout<<std::setprecision(2)<<std::fixed<<"+ "<<e.inc<<" - "<<e.ouc<<"\n";
-    }
+    double tot_inc=0,tot_ouc=0;
+    for(const FinanceLog &e:tmp) tot_inc+=e.inc,tot_ouc+=e.ouc;
+    std::cout<<std::setprecision(2)<<std::fixed<<"+ "<<tot_inc<<" - "<<tot_ouc<<"\n";
     std::cout.flush();
 }
 void FinanceLogOperator::printFinanceTable() noexcept
@@ -76,7 +75,7 @@ void OperationLogOperator::reportAllOperationLog() noexcept
     const std::vector<OperationLog> &tmp=opls.find
     (
         OperationLog(-1,"",""),
-        OperationLog(-1,"~","~")
+        OperationLog(-1,"~~~~~~~~~~","~~~~~~~~~~")
     );
     
     for(const OperationLog &e:tmp)

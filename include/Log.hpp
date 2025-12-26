@@ -47,6 +47,7 @@ public:
 
     static const int memory_size=sizeof(int)+UID_SIZE+1+MESSAGE_SIZE+1;
 
+    inline OperationLog()=default;
     inline OperationLog(int _time,const std::string &_uid,const std::string &_message) noexcept;
 
     class CompareByUID
