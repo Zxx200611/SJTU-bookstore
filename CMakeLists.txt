@@ -64,4 +64,5 @@ endforeach()
 if(NOT TARGET bookstore_lib AND APP_SOURCES)
     # 可以在全局设置包含目录
     include_directories(${CMAKE_SOURCE_DIR}/include)
+
 endif()
