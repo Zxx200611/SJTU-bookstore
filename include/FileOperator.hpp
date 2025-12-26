@@ -25,4 +25,4 @@ public:
     inline int size() noexcept;
 };
 
-#include<FileOperator.ipp>
+#include<FileOperator_implement.hpp>
