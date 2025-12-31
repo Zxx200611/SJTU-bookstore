@@ -35,7 +35,7 @@ private:
     int this_pos,prev_pos,next_pos,siz;
 
 public:
-    static const int block_max_size=1000;
+    static const int block_max_size=1003;
     static const int memory_size=4*4+T::memory_size*(block_max_size+10);
     T data[block_max_size+10];
 
